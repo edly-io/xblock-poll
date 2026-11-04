@@ -887,6 +887,8 @@ class SurveyBlock(PollBase, CSVExportMixin):
     # The display name affects how the block is labeled in the studio,
     # but either way we want it to say 'Poll' by default on the page.
     block_name = String(default=_('Poll'))
+    # Uber: optional lead shown under the survey title, like the poll's question.
+    question = String(default='', help=_("Optional text to display under the survey title."))
     answers = List(
         default=[
             ('Y', _('Yes')),
@@ -948,6 +950,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
             # Mustache is treating an empty string as true.
             'feedback': markdown(self.feedback) or False,
             'block_name': self.block_name,
+            'question': markdown(self.question),
             'can_vote': self.can_vote(),
             'submissions_count': self.submissions_count,
             'max_submissions': self.max_submissions,
@@ -975,6 +978,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
             'max_submissions': self.max_submissions,
             'private_results': self.private_results,
             'block_name': self.block_name,
+            'question': self.question,
             'feedback': self.feedback,
         }
 
@@ -1014,6 +1018,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
         context.update({
             'feedback': self.feedback,
             'display_name': self.block_name,
+            'question': self.question,
             'private_results': self.private_results,
             'js_template': js_template,
             'max_submissions': self.max_submissions,
@@ -1163,6 +1168,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
             'feedback': markdown(self.feedback),
             'plural': total > 1,
             'block_name': self.block_name,
+            'question': markdown(self.question),
             # a11y: Transfer block ID to enable creating unique ids for questions and answers in the template
             'block_id': self._get_block_id()
         }
@@ -1258,6 +1264,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
         result = {'success': True, 'errors': []}
         feedback = data.get('feedback', '').strip()
         block_name = data.get('display_name', '').strip()
+        question = data.get('question', '').strip()
         private_results = bool(data.get('private_results', False))
         max_submissions = self.get_max_submissions(self.ugettext, data, result, private_results)
 
@@ -1273,6 +1280,7 @@ class SurveyBlock(PollBase, CSVExportMixin):
         self.private_results = private_results
         self.max_submissions = max_submissions
         self.block_name = block_name
+        self.question = question
 
         # Tally will not be updated until the next attempt to use it, per
         # scoping limitations.

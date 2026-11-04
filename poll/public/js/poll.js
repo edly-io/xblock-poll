@@ -42,10 +42,6 @@ function PollUtil (runtime, element, pollType) {
             // studio.
             radio = $(selector, element);
             var choice = radio.val();
-            var thanks = $('.poll-voting-thanks', element);
-            thanks.addClass('poll-hidden');
-            // JQuery's fade functions set element-level styles. Clear these.
-            thanks.removeAttr('style');
             $.ajax({
                 type: "POST",
                 url: self.voteUrl,
@@ -143,10 +139,6 @@ function PollUtil (runtime, element, pollType) {
             $('.poll-submissions-count', element).show();
         }
         if ($('div.poll-block', element).data('private')) {
-            // User may be changing their vote. Give visual feedback that it was accepted.
-            var thanks = $('.poll-voting-thanks', element);
-            thanks.removeClass('poll-hidden');
-            thanks.fadeOut(0).fadeIn('slow', 'swing');
             $('.poll-feedback-container', element).removeClass('poll-hidden');
             if (!can_vote) {
                 // Disable all types of input within the element,

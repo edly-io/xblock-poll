@@ -156,6 +156,7 @@ class TestSurveyBlock(unittest.TestCase):
             'private_results': False,
             'feedback': 'My Feedback',
             'block_name': 'My Block Name',
+            'question': 'My Description',
         }
         self.survey_block = SurveyBlock(
             self.runtime,
@@ -174,10 +175,30 @@ class TestSurveyBlock(unittest.TestCase):
             'private_results': self.survery_data['private_results'],
             'feedback': self.survery_data['feedback'],
             'block_name': self.survery_data['block_name'],
+            'question': self.survery_data['question'],
         }
 
         student_view_data = self.survey_block.student_view_data()
         self.assertEqual(student_view_data, expected_survery_data)
+
+    def test_studio_submit_saves_description(self):
+        """
+        Studio's description (posted as `question`) is saved and shown under the title.
+        """
+        data = {
+            'display_name': 'My Block Name',
+            'question': '  How sure do you feel?  ',
+            'feedback': '',
+            'private_results': False,
+            'max_submissions': 1,
+            'answers': [{'key': 'Y', 'label': 'Yes'}, {'key': 'N', 'label': 'No'}],
+            'questions': [{'key': 'enjoy', 'label': 'Are you enjoying the course?'}],
+        }
+        response = json.loads(
+            self.survey_block.handle('studio_submit', make_request(json.dumps(data))).body.decode('utf-8')
+        )
+        self.assertTrue(response['success'], response)
+        self.assertEqual(self.survey_block.question, 'How sure do you feel?')
 
     def test_student_view_user_state_handler(self):
         """

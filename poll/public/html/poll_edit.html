@@ -10,19 +10,19 @@
                 <input class="input setting-input" name="display_name" id="poll-display-name" value="{{ display_name }}" type="text" />
             </div>
         </li>
-        {% if not multiquestion %}
-            <li class="field comp-setting-entry is-set">
-                <h2><label for="poll-question-editor">{% trans 'Question/Prompt' %}</label></h2>
-                {% blocktrans with link_start='<a href="//daringfireball.net/projects/markdown/syntax" target="_blank">' link_end='</a>' %}
-                    {{link_start}}Markdown Syntax{{link_end}} is supported.
-                {% endblocktrans %}
-                <div id="poll-question-editor-container">
-                    <textarea class="input setting-input" name="question" id="poll-question-editor"
-                              aria-describedby="poll-question-editor-help">{{question}}</textarea>
-                </div>
-                <span class="tip setting-help" id="poll-question-editor-help">{% trans 'Enter the prompt for the user.' %}</span>
-            </li>
-        {% endif %}
+        <li class="field comp-setting-entry is-set">
+            <h2><label for="poll-question-editor">{% if multiquestion %}{% trans 'Description' %}{% else %}{% trans 'Question/Prompt' %}{% endif %}</label></h2>
+            {% blocktrans with link_start='<a href="//daringfireball.net/projects/markdown/syntax" target="_blank">' link_end='</a>' %}
+                {{link_start}}Markdown Syntax{{link_end}} is supported.
+            {% endblocktrans %}
+            <div id="poll-question-editor-container">
+                <textarea class="input setting-input" name="question" id="poll-question-editor"
+                          aria-describedby="poll-question-editor-help">{{question}}</textarea>
+            </div>
+            <span class="tip setting-help" id="poll-question-editor-help">
+                {% if multiquestion %}{% trans 'Optional text shown under the survey title.' %}{% else %}{% trans 'Enter the prompt for the user.' %}{% endif %}
+            </span>
+        </li>
         <li class="field comp-setting-entry is-set">
             <h2><label for="poll-feedback-editor">{% trans 'Feedback' %}</label></h2>
             {% blocktrans with link_start='<a href="//daringfireball.net/projects/markdown/syntax" target="_blank">' link_end='</a>' %}

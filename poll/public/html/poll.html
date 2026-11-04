@@ -37,11 +37,6 @@
       </button>
     </form>
 
-    <div class="poll-voting-thanks
-        {% if not choice or can_vote %}poll-hidden{% endif %}">
-      <span>{% trans 'Thank you.' %}</span>
-    </div>
-
     <div class="poll-submissions-count poll-hidden">
       {% blocktrans with submissions_count_s='<span class="poll-current-count">{{ submissions_count }}</span>' max_submissions_s='<span class="poll-max-submissions">{{ max_submissions }}</span>' %}
         You have used {{ submissions_count_s }} out of {{ max_submissions_s }} submissions.
@@ -50,9 +45,6 @@
 
     {% if feedback %}
       <div class="poll-feedback-container{% if not choice %} poll-hidden{% endif %}">
-        <hr/>
-        <h3 class="poll-header">{% trans 'Feedback' %}</h3>
-
         <div class="poll-feedback">
           {{ feedback|safe }}
         </div>
