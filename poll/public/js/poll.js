@@ -151,7 +151,7 @@ function PollUtil (runtime, element, pollType) {
             return;
         }
         // Used if results are not private, to show the user how other students voted.
-        self.getResults();
+        self.getResults(data['success'] === true);
     };
 
     function getStatus() {
@@ -196,8 +196,11 @@ function PollUtil (runtime, element, pollType) {
         window.location = exportStatus.download_url;
     };
 
-    this.getResults = function () {
+    this.getResults = function (justVoted) {
         // Used if results are not private, to show the user how other students voted.
+        // justVoted is only true when rendering right after a successful vote (a click
+        // handler passes an event, hence the strict check); the theme keys its
+        // one-shot result animation to the resulting poll--just-voted class.
         function adjustGaugeBackground() {
             // Adjust the height of the grey background of the the percentage gauges.  This
             // couldn't be achieved with CSS.
@@ -231,6 +234,9 @@ function PollUtil (runtime, element, pollType) {
             data: JSON.stringify({}),
             success: function (data) {
                 $('div.poll-block', element).html(self.resultsTemplate(data));
+                if (justVoted === true) {
+                    $('.poll-results-wrapper', element).addClass('poll--just-voted');
+                }
                 $('.poll-results-wrapper', element).focus();
                 whenImagesLoaded(adjustGaugeBackground);
             }
@@ -253,7 +259,7 @@ function PollUtil (runtime, element, pollType) {
         // If the submit button doesn't exist, the user has already
         // selected a choice. Render results instead of initializing machinery.
         if (data['voted'] && ! data['private_results']) {
-            self.onSubmit({'success': true});
+            self.getResults();
             $('.poll-block-form-wrapper', element).hide();
         }
         else {
